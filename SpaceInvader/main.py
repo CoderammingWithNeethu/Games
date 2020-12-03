@@ -19,7 +19,7 @@ icon = pygame.image.load('D:/GITHUB/GAMES/SpaceInvader/si_icon.png')#32 pixel an
 pygame.display.set_icon(icon)
 
 #Player
-playerImg = pygame.image.load('D:/GITHUB/GAMES/SpaceInvader/player_img2.png')#64 pixel and png
+playerImg = pygame.image.load('D:/GITHUB/GAMES/SpaceInvader/player_img.png')#64 pixel and png
 playerX,playerY =370,480 #initial position 
 playerX_change = 0
 
@@ -28,11 +28,24 @@ enemyImg = pygame.image.load('D:/GITHUB/GAMES/SpaceInvader/alien.png')#64 pixel 
 enemyX, enemyY =random.randint(0,800),random.randint(50,150) #random initial position of enemy
 enemyX_change, enemyY_change = 0.6,25
 
+#Bullet 
+#states : ready - cannot see the bullet on the screen ; fire - bullet is currently moving
+bulletImg = pygame.image.load('D:/GITHUB/GAMES/SpaceInvader/bullet.png')
+bulletX,bulletY=0,480
+bulletX_change, bulletY_change = 0,1
+bullet_state = 'ready'
+
+
 def player(x,y):
     screen.blit(playerImg,(x,y))#blit -- draw
 
 def enemy(x,y):
     screen.blit(enemyImg,(x,y))#blit -- draw
+
+def fire_bullet(x,y):
+    global bullet_state
+    bullet_state = 'fire'
+    screen.blit(bulletImg,(x+16,y+10))#to fire bullet from center of rocket
 
 #game loop - show game window until a close/quit event occurs
 running = True
@@ -57,6 +70,10 @@ while running:
             if event.key == pygame.K_RIGHT:
                 print('Right Arrow Key Pressed')
                 playerX_change = 0.3 #move to right
+            if event.key == pygame.K_SPACE:
+                bulletX = playerX #bullect after firing moving with rocket movement issue handled; \
+                                #first instance of position of rockect is the path to be followed by bullet till 0 coordinate
+                fire_bullet(bulletX,bulletY)
         if event.type == pygame.KEYUP:#key released
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 print('Keystoke Realeased')
@@ -79,6 +96,14 @@ while running:
     elif enemyX >= 736:
         enemyX_change = -0.5 #right to left
         enemyY  += enemyY_change
+
+    #Bullet Movement
+    if bulletY <= 0: # bullet reset after touching 0 cordinate  and firing again
+        bulletY = 480
+        bullet_state = 'ready'
+    if bullet_state is 'fire':
+        fire_bullet(bulletX,bulletY)
+        bulletY -= bulletY_change
 
     player(playerX,playerY) 
     enemy(enemyX,enemyY) 
