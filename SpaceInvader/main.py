@@ -49,7 +49,7 @@ def fire_bullet(x,y):
 
 #game loop - show game window until a close/quit event occurs
 running = True
-while running:
+while running: #for anything that need to be persisited on the screen
     #RGB - 0 to 255 
     screen.fill((0,0,0))#screen drawn first the img is kept on top else img wont be seen 
     
@@ -71,9 +71,12 @@ while running:
                 print('Right Arrow Key Pressed')
                 playerX_change = 0.3 #move to right
             if event.key == pygame.K_SPACE:
-                bulletX = playerX #bullect after firing moving with rocket movement issue handled; \
-                                #first instance of position of rockect is the path to be followed by bullet till 0 coordinate
-                fire_bullet(bulletX,bulletY)
+                if bullet_state is 'ready':#multiple spacbar changes x coordinates and hence multiple bullets ; 
+                                            #for 1 bullet at a time on screen i.e fire if no bullet on screen
+                    bulletX = playerX #bullect after firing moving with rocket movement issue handled; \
+                                        #first instance of position of rockect is the path to be followed by bullet till 0 coordinate
+                                        #gets the current x coordinate of the space ship
+                    fire_bullet(bulletX,bulletY)
         if event.type == pygame.KEYUP:#key released
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 print('Keystoke Realeased')
