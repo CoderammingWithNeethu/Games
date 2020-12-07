@@ -2,7 +2,7 @@
 #pip install pygame
 import pygame
 import random
-
+import math
 #*initialize the pygame
 pygame.init()
 
@@ -25,7 +25,7 @@ playerX_change = 0
 
 #Enemy
 enemyImg = pygame.image.load('D:/GITHUB/GAMES/SpaceInvader/alien.png')#64 pixel and png
-enemyX, enemyY =random.randint(0,800),random.randint(50,150) #random initial position of enemy
+enemyX, enemyY =random.randint(0,735),random.randint(50,150) #random initial position of enemy
 enemyX_change, enemyY_change = 0.6,25
 
 #Bullet 
@@ -35,6 +35,7 @@ bulletX,bulletY=0,480
 bulletX_change, bulletY_change = 0,1
 bullet_state = 'ready'
 
+score = 0
 
 def player(x,y):
     screen.blit(playerImg,(x,y))#blit -- draw
@@ -46,6 +47,13 @@ def fire_bullet(x,y):
     global bullet_state
     bullet_state = 'fire'
     screen.blit(bulletImg,(x+16,y+10))#to fire bullet from center of rocket
+
+def iscollision(enemyX,enemyY,bulletX,bulletY):#distance formula 
+    distance = math.sqrt((math.pow(enemyX-bulletX,2))+(math.pow(enemyY-bulletY,2)))
+    if distance <27:
+        return True
+    else:
+        return False
 
 #game loop - show game window until a close/quit event occurs
 running = True
@@ -63,12 +71,12 @@ while running: #for anything that need to be persisited on the screen
         
         #if keystroke is pressed check whether its right or left
         if event.type == pygame.KEYDOWN: #key pressed
-            print('A Keystoke is pressed')
+            #print('A Keystoke is pressed')
             if event.key == pygame.K_LEFT:
-                print('Left Arrow Key Pressed')
+                #print('Left Arrow Key Pressed')
                 playerX_change = -0.3 #move to left
             if event.key == pygame.K_RIGHT:
-                print('Right Arrow Key Pressed')
+                #print('Right Arrow Key Pressed')
                 playerX_change = 0.3 #move to right
             if event.key == pygame.K_SPACE:
                 if bullet_state is 'ready':#multiple spacbar changes x coordinates and hence multiple bullets ; 
@@ -79,7 +87,7 @@ while running: #for anything that need to be persisited on the screen
                     fire_bullet(bulletX,bulletY)
         if event.type == pygame.KEYUP:#key released
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                print('Keystoke Realeased')
+                #print('Keystoke Realeased')
                 playerX_change = 0 #stop moving
 
 
@@ -107,6 +115,16 @@ while running: #for anything that need to be persisited on the screen
     if bullet_state is 'fire':
         fire_bullet(bulletX,bulletY)
         bulletY -= bulletY_change
+    
+    #for collision
+    collision = iscollision(enemyX,enemyY,bulletX,bulletY)
+    if collision:
+        #reset bullet
+        bulletY = 480
+        bullet_state = 'ready'
+        score += 1
+        print(score)
+        enemyX, enemyY =random.randint(0,735),random.randint(50,150) #random initial position of enemy
 
     player(playerX,playerY) 
     enemy(enemyX,enemyY) 
