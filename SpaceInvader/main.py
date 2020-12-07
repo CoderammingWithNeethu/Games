@@ -62,6 +62,13 @@ score_value = 0
 font = pygame.font.Font('freesansbold.ttf',32)
 textX,textY=10,10
 
+#Game over  text
+over_font = pygame.font.Font('freesansbold.ttf',64)
+def game_over_text(x,y):
+    over_text = over_font.render("GAME OVER",True,(255,255,255))
+    screen.blit(over_text,(200,250))    
+    
+
 def show_score(x,y):
     score = font.render("Score : "+str(score_value),True,(255,255,255))
     screen.blit(score,(x,y))
@@ -134,6 +141,14 @@ while running: #for anything that need to be persisited on the screen
 
     #Enemy movement
     for i in range(no_of_enemy):#for multiple enemy
+
+        #Game Over
+        if enemyY[i]>420:
+            for j in range(no_of_enemy):
+                enemyY[j]=2000#move enemy out of the screen
+            game_over_text(enemyX[i],enemyY[i])
+            break
+
         enemyX[i] += enemyX_change[i] 
         #borders of left and right and move down 
         if enemyX[i] <= 0:
