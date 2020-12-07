@@ -24,9 +24,25 @@ playerX,playerY =370,480 #initial position
 playerX_change = 0
 
 #Enemy
+'''
+#for single enemy
 enemyImg = pygame.image.load('D:/GITHUB/GAMES/SpaceInvader/alien.png')#64 pixel and png
 enemyX, enemyY =random.randint(0,735),random.randint(50,150) #random initial position of enemy
 enemyX_change, enemyY_change = 0.6,25
+'''
+#multiple enemies
+enemyImg = []
+enemyX=[]
+enemyY=[]
+enemyX_change=[]
+enemyY_change =[]
+no_of_enemy = 6
+for i in range(no_of_enemy):
+    enemyImg.append(pygame.image.load('D:/GITHUB/GAMES/SpaceInvader/alien.png'))
+    enemyX.append(random.randint(0,735))
+    enemyY.append(random.randint(50,150))
+    enemyX_change.append(0.6)
+    enemyY_change.append(25)
 
 #Bullet 
 #states : ready - cannot see the bullet on the screen ; fire - bullet is currently moving
@@ -40,8 +56,8 @@ score = 0
 def player(x,y):
     screen.blit(playerImg,(x,y))#blit -- draw
 
-def enemy(x,y):
-    screen.blit(enemyImg,(x,y))#blit -- draw
+def enemy(x,y,i):
+    screen.blit(enemyImg[i],(x,y))#blit -- draw
 
 def fire_bullet(x,y):
     global bullet_state
@@ -99,14 +115,27 @@ while running: #for anything that need to be persisited on the screen
         playerX = 736
 
     #Enemy movement
-    enemyX += enemyX_change 
-    #borders of left and right and move down 
-    if enemyX <= 0:
-        enemyX_change = 0.5 #left to right 
-        enemyY += enemyY_change
-    elif enemyX >= 736:
-        enemyX_change = -0.5 #right to left
-        enemyY  += enemyY_change
+    for i in range(no_of_enemy):#for multiple enemy
+        enemyX[i] += enemyX_change[i] 
+        #borders of left and right and move down 
+        if enemyX[i] <= 0:
+            enemyX_change[i] = 0.5 #left to right 
+            enemyY[i] += enemyY_change[i]
+        elif enemyX[i] >= 736:
+            enemyX_change[i] = -0.5 #right to left
+            enemyY[i]  += enemyY_change[i]
+
+        #for collision
+        collision = iscollision(enemyX[i],enemyY[i],bulletX,bulletY)
+        if collision:
+            #reset bullet
+            bulletY = 480
+            bullet_state = 'ready'
+            score += 1
+            print(score)
+            enemyX[i], enemyY[i] =random.randint(0,735),random.randint(50,150) #random initial position of enemy
+
+        enemy(enemyX[i],enemyY[i],i) 
 
     #Bullet Movement
     if bulletY <= 0: # bullet reset after touching 0 cordinate  and firing again
@@ -116,17 +145,8 @@ while running: #for anything that need to be persisited on the screen
         fire_bullet(bulletX,bulletY)
         bulletY -= bulletY_change
     
-    #for collision
-    collision = iscollision(enemyX,enemyY,bulletX,bulletY)
-    if collision:
-        #reset bullet
-        bulletY = 480
-        bullet_state = 'ready'
-        score += 1
-        print(score)
-        enemyX, enemyY =random.randint(0,735),random.randint(50,150) #random initial position of enemy
-
+    
     player(playerX,playerY) 
-    enemy(enemyX,enemyY) 
+    
 
     pygame.display.update()#*game window needs to be updated always
