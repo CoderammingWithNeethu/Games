@@ -3,6 +3,8 @@
 import pygame
 import random
 import math
+#from pygame import mixer#for handling music
+
 #*initialize the pygame
 pygame.init()
 
@@ -12,6 +14,11 @@ screen = pygame.display.set_mode((800,600))
 #background image
 bg = pygame.image.load('D:/GITHUB/GAMES/SpaceInvader/back_image.png')#same as window size, 800,600
 
+'''
+#background sound
+mixer.music.load('background.wav')
+mixer.music.play(-1)#-1 to play on loop
+'''
 
 #Title and icon
 pygame.display.set_caption("Space Invaders")
@@ -103,6 +110,11 @@ while running: #for anything that need to be persisited on the screen
             if event.key == pygame.K_SPACE:
                 if bullet_state is 'ready':#multiple spacbar changes x coordinates and hence multiple bullets ; 
                                             #for 1 bullet at a time on screen i.e fire if no bullet on screen
+                    '''
+                    #bullet sound
+                    bullet_sound= mixer.Sound('laser.wav')
+                    bullet_sound.play()#no loop hence not -1
+                    '''
                     bulletX = playerX #bullect after firing moving with rocket movement issue handled; \
                                         #first instance of position of rockect is the path to be followed by bullet till 0 coordinate
                                         #gets the current x coordinate of the space ship
@@ -134,6 +146,11 @@ while running: #for anything that need to be persisited on the screen
         #for collision
         collision = iscollision(enemyX[i],enemyY[i],bulletX,bulletY)
         if collision:
+            '''
+            #collision sound 
+            explosion_sound= mixer.Sound('explosion.wav')
+            explosion_sound.play()#no loop hence not -1
+            '''
             #reset bullet
             bulletY = 480
             bullet_state = 'ready'
