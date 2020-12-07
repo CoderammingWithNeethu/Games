@@ -51,7 +51,13 @@ bulletX,bulletY=0,480
 bulletX_change, bulletY_change = 0,1
 bullet_state = 'ready'
 
-score = 0
+score_value = 0
+font = pygame.font.Font('freesansbold.ttf',32)
+textX,textY=10,10
+
+def show_score(x,y):
+    score = font.render("Score : "+str(score_value),True,(255,255,255))
+    screen.blit(score,(x,y))
 
 def player(x,y):
     screen.blit(playerImg,(x,y))#blit -- draw
@@ -131,8 +137,7 @@ while running: #for anything that need to be persisited on the screen
             #reset bullet
             bulletY = 480
             bullet_state = 'ready'
-            score += 1
-            print(score)
+            score_value += 1
             enemyX[i], enemyY[i] =random.randint(0,735),random.randint(50,150) #random initial position of enemy
 
         enemy(enemyX[i],enemyY[i],i) 
@@ -147,6 +152,6 @@ while running: #for anything that need to be persisited on the screen
     
     
     player(playerX,playerY) 
-    
+    show_score(textX,textY)
 
     pygame.display.update()#*game window needs to be updated always
