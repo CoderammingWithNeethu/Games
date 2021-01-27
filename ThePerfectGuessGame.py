@@ -1,7 +1,7 @@
 import random 
 num = random.randint(1,101)
 
-u_num = 0
+u_num = None
 while u_num != num:
     u_num = int(input('Enter ur number : '))
     if u_num>num:
